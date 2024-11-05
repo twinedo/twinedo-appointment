@@ -15,9 +15,11 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import {Controller, useForm} from 'react-hook-form';
 import {styles} from './login.styles';
 import { TWColors } from '@/styles/colors';
+import authStore from '@/stores/auth';
+import { shallow } from 'zustand/shallow';
 
 const Login = () => {
-  // const {login, isPending} = useLoginDriver();
+  const login = authStore(state => state.login);
 
   const [isRememberLogin, setIsRememberLogin] = useState(false);
 
@@ -38,14 +40,13 @@ const Login = () => {
     mode: 'all',
     resolver: yupResolver(schema),
     defaultValues: {
-      username: '', //uqyanzie
-      password: '', //Verysecret123
+      username: '', //user
+      password: '', //password
     },
   });
 
-  const onSubmit = (data: {username: string; password: string}) => {
-    // login(data);
-    console.log('data', data)
+  const onSubmit = async (data: {username: string; password: string}) => {
+    login?.(data);
   };
 
   return (

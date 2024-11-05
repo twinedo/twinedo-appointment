@@ -10,9 +10,18 @@ interface User {
     role: 'user' | 'admin'
 }
 
+interface Response {
+  status: number;
+  message: string;
+  data: User;
+}
+
 interface UsersState {
   users: User[]
+  checkUser?: (username: string, password: string) => Response;
 }
+
+
 
 const initState: UsersState = {
     users: [
@@ -33,10 +42,10 @@ const initState: UsersState = {
     ],
 };
 
-const useUsersStore = create<UsersState>()(
+const usersStore = create<UsersState>()(
   devtools(
     persist(
-      (get) => ({
+      (_, get) => ({
         users: initState.users,
         checkUser: (username: string, password: string) => {
             const dat = get().users;
@@ -45,12 +54,14 @@ const useUsersStore = create<UsersState>()(
                 return {
                     status: 200,
                     message: 'Login successfully',
-                }
+                    data: find,
+                } as Response;
             } else {
                 return {
                     status: 500,
                     message: 'Username or Password is incorrect',
-                };
+                    data: {} as User,
+                } as Response;
             }
         },
       }),
@@ -59,4 +70,4 @@ const useUsersStore = create<UsersState>()(
   ),
 );
 
-export default useUsersStore;
+export default usersStore;

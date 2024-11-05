@@ -3,15 +3,21 @@ import React, { useEffect, useMemo } from 'react'
 import { TWStyles } from 'twrn-styles'
 import { MainStackScreenProps } from '@/navigations/navigations.type'
 import { TWColors } from '@/styles/colors'
+import authStore from '@/stores/auth'
 
 const SplashScreen = ({ navigation }: MainStackScreenProps<'SplashScreen'>) => {
-  const width = useMemo(() => Dimensions.get('window').width, [])
+  const width = useMemo(() => Dimensions.get('window').width, []);
+  const isLoggedIn = authStore(state => state.isLoggedIn);
 
   useEffect(() => {
     setTimeout(() => {
-      navigation.replace('Login')
+      if (isLoggedIn) {
+        navigation.replace('Home');
+      } else {
+        navigation.replace('Login');
+      }
     }, 1000);
-  }, [])
+  }, [isLoggedIn, navigation]);
 
   return (
     <View style={[TWStyles.displayFlex, TWStyles.justifyCenter, TWStyles.alignCenter, {backgroundColor: TWColors.PRIMARY}]}>
